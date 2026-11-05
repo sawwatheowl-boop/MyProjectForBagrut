@@ -1,6 +1,7 @@
 package com.example.myprojectforbagrut;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -26,7 +27,7 @@ public class SplashScreen extends AppCompatActivity {
         ivLogo.startAnimation(animation);
         tvSubtitle.startAnimation(animation);
 
-        // Переход через фоновый поток Thread согласно требованиям Багрута
+        // Переход через фоновый поток Thread
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -35,7 +36,16 @@ public class SplashScreen extends AppCompatActivity {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } finally {
-                    Intent intent = new Intent(SplashScreen.this, SignUp.class);
+                    // Проверка SharedPreferences (קריאה): если пользователь выбрал "זכור אותי"
+                    SharedPreferences sp = getSharedPreferences("user_prefs", MODE_PRIVATE);
+                    boolean isRemembered = sp.getBoolean("is_remembered", false);
+
+                    Intent intent;
+                    if (isRemembered) {
+                        intent = new Intent(SplashScreen.this, MainActivity.class);
+                    } else {
+                        intent = new Intent(SplashScreen.this, SignUp.class);
+                    }
                     startActivity(intent);
                     finish();
                 }

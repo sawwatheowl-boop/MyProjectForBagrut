@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">MyProjectForBagrut</string>
     <string name="splash_subtitle">למדריכים</string>
+    <string name="remember_me">remember me</string>
 </resources>

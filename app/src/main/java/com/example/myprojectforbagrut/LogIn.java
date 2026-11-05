@@ -1,8 +1,10 @@
 package com.example.myprojectforbagrut;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,11 +18,14 @@ import androidx.core.view.WindowInsetsCompat;
 public class LogIn extends AppCompatActivity {
 
     private EditText etEmail, etPassword;
+    private CheckBox cbRememberMe;
     private Button btnLogin;
     private TextView tvDontHaveAccount;
 
     private String registeredUser;
     private String registeredPassword;
+
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,30 +39,42 @@ public class LogIn extends AppCompatActivity {
             return insets;
         });
 
-        // 3. Поиск элементов по ID
+        // 1. Поиск элементов по ID
         etEmail = findViewById(R.id.etEmail);
         etPassword = findViewById(R.id.etPassword);
+        cbRememberMe = findViewById(R.id.cbRememberMe);
         btnLogin = findViewById(R.id.btnLogin);
         tvDontHaveAccount = findViewById(R.id.tvDontHaveAccount);
 
-        // 5. Получение переданных данных с проверкой на null
+        // Инициализация SharedPreferences
+        sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
+
+        // 3. קריאה: Считывание сохраненных данных из SharedPreferences
+        boolean isRemembered = sharedPreferences.getBoolean("is_remembered", false);
+        if (isRemembered) {
+            String savedEmail = sharedPreferences.getString("saved_email", "");
+            String savedPassword = sharedPreferences.getString("saved_password", "");
+            etEmail.setText(savedEmail);
+            etPassword.setText(savedPassword);
+            cbRememberMe.setChecked(true);
+        }
+
+        // 5. Получение данных с экрана регистрации (SignUp)
         Intent incomingIntent = getIntent();
         if (incomingIntent != null) {
             registeredUser = incomingIntent.getStringExtra("username");
             registeredPassword = incomingIntent.getStringExtra("password");
 
-            // Заполнение поля email, если данные пришла из регистрации
-            if (registeredUser != null) {
+            if (registeredUser != null && etEmail.getText().toString().trim().isEmpty()) {
                 etEmail.setText(registeredUser);
             }
         }
 
-        // 6. Проверка при нажатии на кнопку входа
+        // 2 & 4. כתיבה והודעה: Логика кнопки входа
         btnLogin.setOnClickListener(v -> {
             String email = etEmail.getText().toString().trim();
             String password = etPassword.getText().toString().trim();
 
-            // Проверка на пустоту с setError() и return
             if (email.isEmpty()) {
                 etEmail.setError("נא להזין אימייל");
                 return;
@@ -68,13 +85,11 @@ public class LogIn extends AppCompatActivity {
                 return;
             }
 
-            // Проверка длинной сисмы
             if (password.length() < 6) {
                 etPassword.setError("סיסמה חייבת להכיל לפחות 6 תווים");
                 return;
             }
 
-            // 6. Сравнение введенных данных с сохраненными через equals()
             if (registeredUser != null && registeredPassword != null) {
                 if (!email.equals(registeredUser)) {
                     etEmail.setError("שם משתמש שגוי");
@@ -85,6 +100,19 @@ public class LogIn extends AppCompatActivity {
                     return;
                 }
             }
+
+            // 2 & 4. כתיבה / מחיקה: Сохранение или очистка данных в SharedPreferences
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            if (cbRememberMe.isChecked()) {
+                editor.putBoolean("is_remembered", true);
+                editor.putString("saved_email", email);
+                editor.putString("saved_password", password);
+                Toast.makeText(LogIn.this, "פרטי ההתחברות נשמרו", Toast.LENGTH_SHORT).show();
+            } else {
+                // 4. מחיקה: Очистка SharedPreferences если галочка не стоит
+                editor.clear();
+            }
+            editor.apply();
 
             Toast.makeText(LogIn.this, "התחברת בהצלחה!", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(LogIn.this, MainActivity.class);
