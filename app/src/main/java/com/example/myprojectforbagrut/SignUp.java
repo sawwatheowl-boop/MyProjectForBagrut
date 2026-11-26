@@ -1,6 +1,7 @@
 package com.example.myprojectforbagrut;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -95,11 +96,21 @@ public class SignUp extends AppCompatActivity {
                 return;
             }
 
-            // 4. Передача данных в LogIn через putExtra()
+            // Формируем полное имя пользователя из имени и фамилии
+            String fullName = firstName + " " + lastName;
+
+            // 4. Сохранение данных в SharedPreferences и передача через Intent
+            SharedPreferences sp = getSharedPreferences("user_prefs", MODE_PRIVATE);
+            sp.edit()
+                    .putString("saved_email", email)
+                    .putString("saved_full_name", fullName)
+                    .apply();
+
             Toast.makeText(SignUp.this, "הרשמה בוצעה בהצלחה!", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(SignUp.this, LogIn.class);
             intent.putExtra("username", email);
             intent.putExtra("password", password);
+            intent.putExtra("fullName", fullName);
             startActivity(intent);
             finish();
         });

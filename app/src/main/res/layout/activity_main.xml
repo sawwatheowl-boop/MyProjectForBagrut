@@ -21,31 +21,34 @@
             android:padding="16dp">
 
             <!-- Кнопка 3 линии (Меню) вверху слева -->
-            <ImageView
-                android:id="@+id/btnMenu"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:contentDescription="Menu"
-                android:src="@drawable/ic_menu"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
 
             <!-- Кнопка Колокольчик вверху справа -->
 
             <!-- Логотип (из эскиза) -->
 
             <ImageView
+                android:id="@+id/btnMenu"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="24dp"
+                android:contentDescription="Menu"
+                android:src="@drawable/ic_menu"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
                 android:id="@+id/btnNotification"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
-                android:layout_marginEnd="292dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="12dp"
                 android:contentDescription="Notification"
                 android:src="@drawable/ic_notifications"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.739"
-                app:layout_constraintStart_toEndOf="@+id/btnMenu"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <!-- Поле поиска: Find (Today, ...) -->
             <ImageView
                 android:id="@+id/imageView"
                 android:layout_width="140dp"
@@ -53,11 +56,11 @@
                 android:layout_marginTop="12dp"
                 android:contentDescription="Logo Shield"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.485"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/btnMenu"
                 app:srcCompat="@drawable/logo_shield" />
 
-            <!-- Поле поиска: Find (Today, ...) -->
             <EditText
                 android:id="@+id/etSearch"
                 android:layout_width="match_parent"

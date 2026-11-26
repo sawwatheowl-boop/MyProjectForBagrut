@@ -64,6 +64,11 @@ public class LogIn extends AppCompatActivity {
         if (incomingIntent != null) {
             registeredUser = incomingIntent.getStringExtra("username");
             registeredPassword = incomingIntent.getStringExtra("password");
+            String fullName = incomingIntent.getStringExtra("fullName");
+
+            if (fullName != null) {
+                sharedPreferences.edit().putString("saved_full_name", fullName).apply();
+            }
 
             if (registeredUser != null && etEmail.getText().toString().trim().isEmpty()) {
                 etEmail.setText(registeredUser);
@@ -103,14 +108,14 @@ public class LogIn extends AppCompatActivity {
 
             // 2 & 4. כתיבה / מחיקה: Сохранение или очистка данных в SharedPreferences
             SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("saved_email", email);
             if (cbRememberMe.isChecked()) {
                 editor.putBoolean("is_remembered", true);
-                editor.putString("saved_email", email);
                 editor.putString("saved_password", password);
                 Toast.makeText(LogIn.this, "פרטי ההתחברות נשמרו", Toast.LENGTH_SHORT).show();
             } else {
                 // 4. מחיקה: Очистка SharedPreferences если галочка не стоит
-                editor.clear();
+                editor.remove("is_remembered");
             }
             editor.apply();
 
